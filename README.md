@@ -7,6 +7,7 @@ This repo trains and tests the model on stereo pairs using the Eigen splits.
 # Author(s) 
 
 Ziwen Chen (github: arthurhero)
+
 Zixuan Guo (github: Olament)
 
 ## Usage
