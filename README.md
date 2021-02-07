@@ -83,4 +83,4 @@ mv -R data_depth_annotated/* raw_kitti
 
 
 ## Acknowledgments
-
+Thank Professor Jerod Weinman for his great support (including server provision and paper revision).
