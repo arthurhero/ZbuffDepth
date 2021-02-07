@@ -1,0 +1,9 @@
+*.jpg
+datasets/
+dataset/
+raw_kitti/
+__pycache__/
+logs/
+runs/
+data/*valid*
+eigen/
