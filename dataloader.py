@@ -1,3 +1,19 @@
+# Copyright (C) Ziwen Chen, Zixuan Guo
+# This file is part of ZbuffDepth <https://github.com/arthurhero/ZbuffDepth>.
+#
+# ZbuffDepth is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# ZbuffDepth is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with ZbuffDepth.  If not, see <http://www.gnu.org/licenses/>.
+
 import os
 import sys
 
@@ -30,99 +46,6 @@ class MySampler(Sampler):
 
     def __len__(self):
         return len(self.seq)
-
-
-class StaticKitti(Dataset):
-    def __init__(self, dataset_path, subseq_file, seq_len, skip, ih, iw, crop=True, separate=True):
-        '''
-        Generate static video segments with egomotion
-        '''
-        self.path = dataset_path
-        subseq_path = os.path.join(root_folder, subseq_file)
-        f = open(subseq_path, 'r')
-        seqs = f.read().splitlines()
-        f.close()
-        entries = list()
-        lengths = list()
-        self.seq_len = (seq_len - 1) * (skip) + seq_len
-        for entry in seqs:
-            s, start, end = entry.split()
-            start, end = int(start), int(end)
-            if end - start + 1 < self.seq_len:
-                continue
-            entries.append((s, start, end))
-            lengths.append(end - start + 1)
-        self.seqs = entries
-        self.lengths = lengths
-        self.real_len = seq_len
-        self.skip = skip
-        self.ih = ih
-        self.iw = iw
-        self.crop = crop
-        self.separate = separate
-
-    def __len__(self):
-        total = 0
-        for l in self.lengths:
-            total += (l - self.seq_len + 1)
-        return total
-
-    def __getitem__(self, idx):
-        seq_idx = 0
-        for i in range(len(self.lengths)):
-            l = self.lengths[i]
-            if idx < l - self.seq_len + 1:
-                seq_idx = i
-                break
-            else:
-                idx -= (l - self.seq_len + 1)
-        seq, start, end = self.seqs[seq_idx]
-        start += idx
-        end = start + self.seq_len - 1
-        if self.separate:
-            img, ego, proj, vc = integ_sequence(seq, start, end, self.path, separate=self.separate)
-            img, ego, proj, vc = torch.from_numpy(img).float(), torch.from_numpy(ego).float(), torch.from_numpy(
-                proj).float(), torch.from_numpy(vc).float()
-        else:
-            img, ego, proj = integ_sequence(seq, start, end, self.path, separate=self.separate)
-            img, ego, proj = torch.from_numpy(img).float(), torch.from_numpy(ego).float(), torch.from_numpy(
-                proj).float()
-            vc = proj.clone()
-        _, orig_h, orig_w, _ = img.shape
-        imgs = list()
-        imgs_orig = list()
-        egos = list()
-        image_trans = transforms.Compose([
-            transforms.ToPILImage(),
-            # transforms.Resize((self.ih, self.iw)),
-            transforms.ColorJitter(brightness=(0.8, 1.2), contrast=(0.8, 1.2),
-                                   saturation=(0.8, 1.2), hue=(-0.1, 0.1)),
-            transforms.ToTensor()])
-        for i in range(self.real_len):
-            image = img[i * (self.skip + 1)]
-            image = image.permute(2, 0, 1)
-            if self.crop:
-                image = image[:, 0:self.ih, 0:self.iw]
-            else:
-                image = F.interpolate(image.unsqueeze(0), (self.ih, self.iw), mode='bilinear', align_corners=False)
-            imgs_orig.append(image)
-            image = image_trans(image.squeeze())
-            imgs.append(image.unsqueeze(0))
-            if i != self.real_len - 1:
-                cur_ego = ego[i * (self.skip + 1)]
-                for j in range(self.skip):
-                    cur_ego = torch.matmul(ego[i * (self.skip + 1) + j + 1], cur_ego)
-                egos.append(cur_ego.unsqueeze(0))
-        img = torch.cat(imgs, dim=0)
-        img_orig = torch.cat(imgs_orig, dim=0)
-
-        ego = torch.cat(egos, dim=0)
-
-        if self.crop:
-            return (img, img_orig, ego, proj, vc, float(self.ih), float(self.iw))
-        else:
-            return (img, img_orig, ego, proj, vc, float(orig_h), float(orig_w))
-
 
 class StereoKitti(Dataset):
     def __init__(self, dataset_path, ih, iw):

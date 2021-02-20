@@ -45,10 +45,10 @@ mv -R data_depth_annotated/* raw_kitti
 
 ## Files
 
-*train_\*.sh*
-:   the training wrapper script for stereo and egomotion, with cmd args
+*train_stereo.sh*
+:   the training wrapper script for stereo, with cmd args
 
-*run_\*.py*
+*run_stereo.py*
 :   the training code
 
 *loss.py*
