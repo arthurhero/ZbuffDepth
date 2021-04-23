@@ -81,6 +81,20 @@ mv -R data_depth_annotated/* raw_kitti
 *bts_orig.py*
 :   the encoder-decoder architecture, adapted from BTS (Lee et. al.)
 
+## Citation
+
+If you find this code useful, please cite our paper:
+
+> Chen, Z., Guo, Z., and Weinman, J. Improved Point Transformation Methods for Self-Supervised Depth Prediction. In Proceedings of the 18th Conference on Robots and Vision (CRV). 2021.
+
+```bibtex
+@inproceedings{chen21improved,
+    author = {Chen Ziwen and Zixuan Guo and Jerod Weinman},
+    title = {Improved Point Transformation Methods for Self-Supervised Depth Prediction},
+    booktitle = {2021 18th Conference on Computer and Robot Vision ({CRV})},
+    year = {2021}
+}
+```
 
 ## Acknowledgments
 Thank Professor Jerod Weinman for his great support (including server provision and paper revision).
