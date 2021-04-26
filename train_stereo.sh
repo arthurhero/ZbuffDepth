@@ -38,7 +38,8 @@ python3 run_stereo.py \
       --ssim_lambda 2.0 \
       --nd_lambda 2.0 \
       --skymask_distance 100.0 \
-#      --zbuffer \
+      --zbuffer_late 0 \
+      --zbuffer \
 #      --gordon_zbuffer
 #      --sky_only_smooth
 #      --include_nd
