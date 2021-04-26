@@ -34,6 +34,7 @@ from loss import *
 from utils import *
 import argparse
 from datetime import datetime
+import time
 
 from validate import evaluate 
 
@@ -103,6 +104,7 @@ def lr_lamb(ep,model):
         '''
 
 def train(visualize=False):
+    step_time_running_sum = 0.0
     print("Using", device)
     args=parse_args()
     print("Args:", args)
@@ -192,6 +194,7 @@ def train(visualize=False):
             vc_batch - B x 4 x 4
             proj_batch - B x 4 x 4
             '''
+            start = time.time()
             lo_batch, ro_batch, l_batch, r_batch, vc_batch, l_proj, r_proj= \
                     lo_batch.to(device), ro_batch.to(device), l_batch.to(device), \
                     r_batch.to(device), vc_batch.to(device), l_proj.to(device), r_proj.to(device)
@@ -292,6 +295,8 @@ def train(visualize=False):
             loss.backward()
             optimizer.step()
 
+            step_time_running_sum += (time.time() - start)
+
             if step % chunk == chunk - 1:
                 batch = torch.cat([l_batch,r_batch])
                 depth = torch.cat([l_depth,r_depth])
@@ -341,6 +346,7 @@ def train(visualize=False):
                 l_smooth_sum, l_ssim_sum, l_recon_sum, l_match_sum, l_nd_sum = 0, 0, 0, 0, 0
             step += 1
         scheduler.step()
+        print("Avg step time in this epoch:", step_time_running_sum / float(step))
     # writer.close()
 
 

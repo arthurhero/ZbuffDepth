@@ -30,7 +30,7 @@ python3 run_stereo.py \
       --shuffle_seed 76 \
       --batch_size 3 \
       --learning_rate 0.00001 \
-      --num_epochs 20 \
+      --num_epochs 1 \
       --log_rate 100 \
       --image_height 300 \
       --image_width 1000 \
