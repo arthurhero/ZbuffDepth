@@ -70,7 +70,7 @@ def eval_eigen(dataset_path,eval_input,model,crop_type='eigen'):
         with torch.no_grad():
             depth = egodepth(img)
             gt=torch.Tensor(gt_depths[t_id].copy()).unsqueeze(0)
-            visualize_img_depth(img[0].float(), depth[0].float(), save=True, fname=str(t_id)+'.jpg')
+            #visualize_img_depth(img[0].float(), depth[0].float(), save=True, fname=str(t_id)+'.jpg')
             depth = depth.squeeze().cpu().detach().numpy()  # h x w x 1
 
         depth_pred = cv2.resize(depth, (im_sizes[t_id][1], im_sizes[t_id][0]), interpolation=cv2.INTER_NEAREST)
@@ -121,5 +121,5 @@ def eval_eigen(dataset_path,eval_input,model,crop_type='eigen'):
 
 
 if __name__ == '__main__':
-    eval_eigen('/scratch/data/raw/robotics/kitti/raw_sequences-20200224133836/data/',\
-            'logs/new_stereo_floor_late_10/best.ckpt',model='orig',crop_type='garg')
+    eval_eigen('/PATH/TO/kitti',\
+            '/PATH/TO/best.ckpt',model='orig',crop_type='garg')
