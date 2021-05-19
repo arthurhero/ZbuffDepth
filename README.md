@@ -34,7 +34,7 @@ mv -R data_depth_annotated/* raw_kitti
 ```
 
 ### Training
-1. Create folder `mkdir logs`
+1. Create folder `mkdir logs` and `mkdir data`
 2. For training on stereo pairs, edit the parameters in `train_stereo.sh`, and run `./train_stereo.sh`
 
 ### Evaluating On Eigen

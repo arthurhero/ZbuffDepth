@@ -31,10 +31,10 @@ python3 run_stereo.py \
       --batch_size 3 \
       --learning_rate 0.00001 \
       --num_epochs 20 \
-      --log_rate 100 \
-      --image_height 300 \
-      --image_width 1000 \
-      --smooth_lambda 0.001 \
+      --log_rate 200 \
+      --image_height 352 \
+      --image_width 1216 \
+      --smooth_lambda 0.0 \
       --ssim_lambda 2.0 \
       --nd_lambda 2.0 \
       --zbuffer \
